@@ -1,0 +1,252 @@
+<html>
+<head>
+<title>MainActivity.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cc7832;}
+.s1 { color: #a9b7c6;}
+.s2 { color: #6897bb;}
+.s3 { color: #808080;}
+.s4 { color: #6a8759;}
+</style>
+</head>
+<body bgcolor="#2b2b2b">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+MainActivity.java</font>
+</center></td></tr></table>
+<pre><span class="s0">package </span><span class="s1">com.example.whackaberrykin</span><span class="s0">;</span>
+
+<span class="s0">import static </span><span class="s1">java.lang.Thread.sleep</span><span class="s0">;</span>
+
+<span class="s0">import </span><span class="s1">androidx.appcompat.app.AppCompatActivity</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">androidx.constraintlayout.widget.ConstraintLayout</span><span class="s0">;</span>
+
+<span class="s0">import </span><span class="s1">android.os.Bundle</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.os.Handler</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.view.View</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.view.animation.AnimationSet</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.view.animation.ScaleAnimation</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.view.animation.Animation</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.widget.Button</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.widget.GridLayout</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.widget.ImageView</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.widget.TextView</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.widget.Toast</span><span class="s0">;</span>
+
+<span class="s0">import </span><span class="s1">java.util.concurrent.atomic.AtomicInteger</span><span class="s0">;</span>
+
+<span class="s0">public class </span><span class="s1">MainActivity </span><span class="s0">extends </span><span class="s1">AppCompatActivity {</span>
+
+    <span class="s1">ImageView cookieBrown</span><span class="s0">;</span>
+    <span class="s1">ImageView cookieChocoChips</span><span class="s0">;</span>
+    <span class="s1">ImageView cookiePink</span><span class="s0">;</span>
+    <span class="s1">ImageView cookieRainbow</span><span class="s0">;</span>
+    <span class="s1">ImageView cookieWhite</span><span class="s0">;</span>
+    <span class="s1">ImageView cookieDark</span><span class="s0">;</span>
+    <span class="s1">TextView timerText</span><span class="s0">;</span>
+    <span class="s1">TextView points</span><span class="s0">;</span>
+    <span class="s1">ConstraintLayout layout</span><span class="s0">;</span>
+    <span class="s1">GridLayout gridLay</span><span class="s0">;</span>
+    <span class="s1">Button restart</span><span class="s0">;</span>
+    <span class="s0">int </span><span class="s1">score = </span><span class="s2">0</span><span class="s0">;</span>
+    <span class="s1">AtomicInteger count</span><span class="s0">;</span>
+    <span class="s0">int </span><span class="s1">rand</span><span class="s0">;</span>
+    <span class="s0">int </span><span class="s1">pause</span><span class="s0">;</span>
+    <span class="s1">Runnable r</span><span class="s0">;</span>
+
+    <span class="s1">Handler timing</span><span class="s0">;</span>
+
+
+    <span class="s1">@Override</span>
+    <span class="s0">protected void </span><span class="s1">onCreate(Bundle savedInstanceState) {</span>
+        <span class="s0">super</span><span class="s1">.onCreate(savedInstanceState)</span><span class="s0">;</span>
+        <span class="s1">setContentView(R.layout.activity_main)</span><span class="s0">;</span>
+        <span class="s1">timerText = findViewById(R.id.id_timer)</span><span class="s0">;</span>
+        <span class="s1">points = findViewById(R.id.textView2)</span><span class="s0">;</span>
+        <span class="s1">cookieChocoChips = findViewById(R.id.id_cookieChocoChips)</span><span class="s0">;</span>
+        <span class="s1">cookiePink = findViewById(R.id.id_cookiePink)</span><span class="s0">;</span>
+        <span class="s1">cookieRainbow = findViewById(R.id.id_cookieRainbow)</span><span class="s0">;</span>
+        <span class="s1">cookieWhite = findViewById(R.id.id_cookieWhite)</span><span class="s0">;</span>
+        <span class="s1">cookieDark = findViewById(R.id.id_cookieDark)</span><span class="s0">;</span>
+        <span class="s1">cookieBrown = findViewById(R.id.id_cookieBrown)</span><span class="s0">;</span>
+        <span class="s1">layout = findViewById(R.id.id_layout)</span><span class="s0">;</span>
+        <span class="s1">restart = findViewById(R.id.id_restart)</span><span class="s0">;</span>
+        <span class="s1">gridLay = findViewById(R.id.id_gridLayout)</span><span class="s0">;</span>
+
+        <span class="s1">count = </span><span class="s0">new </span><span class="s1">AtomicInteger(</span><span class="s2">30</span><span class="s1">)</span><span class="s0">;</span>
+
+        <span class="s0">final </span><span class="s1">ScaleAnimation animateappear = </span><span class="s0">new </span><span class="s1">ScaleAnimation(</span><span class="s2">0f</span><span class="s0">, </span><span class="s2">1f</span><span class="s0">, </span><span class="s2">0f</span><span class="s0">, </span><span class="s2">1f</span><span class="s0">, </span><span class="s1">Animation.RELATIVE_TO_SELF</span><span class="s0">, </span><span class="s2">0.5f</span><span class="s0">, </span><span class="s1">Animation.RELATIVE_TO_SELF</span><span class="s0">, </span><span class="s2">0.5f</span><span class="s1">)</span><span class="s0">;</span>
+        <span class="s0">final </span><span class="s1">ScaleAnimation animatedisappear = </span><span class="s0">new </span><span class="s1">ScaleAnimation(</span><span class="s2">1f</span><span class="s0">, </span><span class="s2">0f</span><span class="s0">, </span><span class="s2">1f</span><span class="s0">, </span><span class="s2">0f</span><span class="s0">, </span><span class="s1">Animation.RELATIVE_TO_SELF</span><span class="s0">, </span><span class="s2">0.5f</span><span class="s0">, </span><span class="s1">Animation.RELATIVE_TO_SELF</span><span class="s0">, </span><span class="s2">0.5f</span><span class="s1">)</span><span class="s0">;</span>
+        <span class="s3">//final ScaleAnimation ani = new ScaleAnimation(1f, 0f, 1f, 0f, Animation., 0.5f, Animation.RELATIVE_TO_SELF,0.5f);</span>
+        <span class="s1">animateappear.setDuration(</span><span class="s2">1500</span><span class="s1">)</span><span class="s0">;</span>
+        <span class="s1">animatedisappear.setStartOffset(</span><span class="s2">5000</span><span class="s1">)</span><span class="s0">;</span>
+        <span class="s1">animatedisappear.setDuration(</span><span class="s2">1500</span><span class="s1">)</span><span class="s0">;</span>
+        <span class="s3">//animatedisappear.setFillAfter(true);</span>
+        <span class="s1">AnimationSet as = </span><span class="s0">new </span><span class="s1">AnimationSet(</span><span class="s0">true</span><span class="s1">)</span><span class="s0">;</span>
+        <span class="s1">as.addAnimation(animateappear)</span><span class="s0">;</span>
+        <span class="s1">as.addAnimation(animatedisappear)</span><span class="s0">;</span>
+
+        <span class="s1">timing = </span><span class="s0">new </span><span class="s1">Handler()</span><span class="s0">;</span>
+        <span class="s1">r = </span><span class="s0">new </span><span class="s1">Runnable() {</span>
+            <span class="s1">@Override</span>
+            <span class="s0">public void </span><span class="s1">run() {</span>
+                <span class="s3">//animating();</span>
+                <span class="s3">// if (count &gt; 0) {</span>
+                <span class="s1">rand = (</span><span class="s0">int</span><span class="s1">) (Math.random() * </span><span class="s2">6</span><span class="s1">) + </span><span class="s2">1</span><span class="s0">; </span><span class="s3">// 1,2,3,4,5,6</span>
+                <span class="s1">pause = (</span><span class="s0">int</span><span class="s1">) (Math.random() * </span><span class="s2">2000</span><span class="s1">) + </span><span class="s2">500</span><span class="s0">; </span><span class="s3">//500-2000</span>
+                <span class="s0">int </span><span class="s1">status = (</span><span class="s0">int</span><span class="s1">)(Math.random()*</span><span class="s2">9</span><span class="s1">)+</span><span class="s2">1</span><span class="s0">;</span>
+
+                <span class="s0">if </span><span class="s1">(rand == </span><span class="s2">6 </span><span class="s1">&amp;&amp; cookieBrown.getScaleX() == </span><span class="s2">0 </span><span class="s1">&amp;&amp; cookieBrown.getScaleY() == </span><span class="s2">0</span><span class="s1">) {</span>
+                    <span class="s1">scaleCookie(cookieBrown</span><span class="s0">, true, true,</span><span class="s1">status)</span><span class="s0">; </span><span class="s3">//meaning it's starting from 0 and scaling up and it's clickable</span>
+                    <span class="s1">timing.postDelayed(() -&gt; scaleCookie(cookieBrown</span><span class="s0">, false, true,</span><span class="s1">status)</span><span class="s0">, </span><span class="s2">2000</span><span class="s1">)</span><span class="s0">;</span>
+                <span class="s1">}</span>
+                <span class="s0">if </span><span class="s1">(rand == </span><span class="s2">1 </span><span class="s1">&amp;&amp; cookieDark.getScaleX() == </span><span class="s2">0 </span><span class="s1">&amp;&amp; cookieDark.getScaleY() == </span><span class="s2">0</span><span class="s1">) {</span>
+                    <span class="s1">scaleCookie(cookieDark</span><span class="s0">, true, true,</span><span class="s1">status)</span><span class="s0">;</span>
+                    <span class="s1">timing.postDelayed(() -&gt; scaleCookie(cookieDark</span><span class="s0">, false, true,</span><span class="s1">status)</span><span class="s0">, </span><span class="s2">2000</span><span class="s1">)</span><span class="s0">;</span>
+                <span class="s1">}</span>
+                <span class="s0">if </span><span class="s1">(rand == </span><span class="s2">2 </span><span class="s1">&amp;&amp; cookiePink.getScaleX() == </span><span class="s2">0 </span><span class="s1">&amp;&amp; cookiePink.getScaleY() == </span><span class="s2">0</span><span class="s1">) {</span>
+                    <span class="s1">scaleCookie(cookiePink</span><span class="s0">, true, true,</span><span class="s1">status)</span><span class="s0">;</span>
+                    <span class="s1">timing.postDelayed(() -&gt; scaleCookie(cookiePink</span><span class="s0">, false, true,</span><span class="s1">status)</span><span class="s0">, </span><span class="s2">2000</span><span class="s1">)</span><span class="s0">;</span>
+                <span class="s1">}</span>
+                <span class="s3">// Log.d(&quot;test&quot;,String.valueOf(cookieRainbow.getScaleX()));</span>
+                <span class="s3">// Log.d(&quot;test&quot;,String.valueOf(cookieRainbow.getScaleY()));</span>
+                <span class="s0">if </span><span class="s1">(rand == </span><span class="s2">3 </span><span class="s1">&amp;&amp; cookieRainbow.getScaleX() == </span><span class="s2">0 </span><span class="s1">&amp;&amp; cookieRainbow.getScaleY() == </span><span class="s2">0</span><span class="s1">) {</span>
+                    <span class="s1">scaleCookie(cookieRainbow</span><span class="s0">, true, true,</span><span class="s1">status)</span><span class="s0">;</span>
+                    <span class="s1">timing.postDelayed(() -&gt; scaleCookie(cookieRainbow</span><span class="s0">, false, true,</span><span class="s1">status)</span><span class="s0">, </span><span class="s2">2000</span><span class="s1">)</span><span class="s0">;</span>
+                <span class="s1">}</span>
+                <span class="s0">if </span><span class="s1">(rand == </span><span class="s2">4 </span><span class="s1">&amp;&amp; cookieWhite.getScaleX() == </span><span class="s2">0 </span><span class="s1">&amp;&amp; cookieWhite.getScaleY() == </span><span class="s2">0</span><span class="s1">) {</span>
+                    <span class="s1">scaleCookie(cookieWhite</span><span class="s0">, true, true,</span><span class="s1">status)</span><span class="s0">;</span>
+                    <span class="s1">timing.postDelayed(() -&gt; scaleCookie(cookieWhite</span><span class="s0">, false, true,</span><span class="s1">status)</span><span class="s0">, </span><span class="s2">2000</span><span class="s1">)</span><span class="s0">;</span>
+                <span class="s1">}</span>
+                <span class="s0">if </span><span class="s1">(rand == </span><span class="s2">5 </span><span class="s1">&amp;&amp; cookieChocoChips.getScaleX() == </span><span class="s2">0 </span><span class="s1">&amp;&amp; cookieChocoChips.getScaleY() == </span><span class="s2">0</span><span class="s1">) {</span>
+                    <span class="s1">scaleCookie(cookieChocoChips</span><span class="s0">, true, true,</span><span class="s1">status)</span><span class="s0">;</span>
+                    <span class="s1">timing.postDelayed(() -&gt; scaleCookie(cookieChocoChips</span><span class="s0">, false, true,</span><span class="s1">status)</span><span class="s0">, </span><span class="s2">2000</span><span class="s1">)</span><span class="s0">;</span>
+                <span class="s1">}</span>
+                <span class="s0">if </span><span class="s1">(count.get()&gt; </span><span class="s2">2</span><span class="s1">) {</span>
+                    <span class="s1">pause = (</span><span class="s0">int</span><span class="s1">) (Math.random() * </span><span class="s2">2000</span><span class="s1">) + </span><span class="s2">500</span><span class="s0">; </span><span class="s3">//500-2000</span>
+                    <span class="s1">timing.postDelayed(</span><span class="s0">this, </span><span class="s1">pause)</span><span class="s0">;</span>
+                <span class="s1">}</span>
+            <span class="s1">}</span>
+
+
+        <span class="s1">}</span><span class="s0">;</span>
+
+
+        <span class="s1">Toast message = Toast.makeText(</span><span class="s0">this,</span><span class="s4">&quot;Game Over! Click restart to play again!&quot;</span><span class="s0">,</span><span class="s1">Toast.LENGTH_SHORT)</span><span class="s0">;</span>
+
+
+        <span class="s1">Thread thread2 = </span><span class="s0">new </span><span class="s1">Thread(</span><span class="s0">new </span><span class="s1">Runnable()</span>
+                <span class="s3">//this manages cookies appearring/disappearring + points</span>
+        <span class="s1">{</span>
+            <span class="s0">public void </span><span class="s1">run() {</span>
+                <span class="s3">//return</span>
+                <span class="s3">//runOnUiThread(new Runnable() {</span>
+                <span class="s3">// @Override</span>
+                <span class="s3">//public void run() {</span>
+
+                <span class="s1">timing.postDelayed(r</span><span class="s0">, </span><span class="s2">0</span><span class="s1">)</span><span class="s0">;</span>
+
+                <span class="s3">// }</span>
+            <span class="s1">}</span>
+
+
+        <span class="s1">})</span><span class="s0">;</span>
+
+        <span class="s1">Thread thread = </span><span class="s0">new </span><span class="s1">Thread(</span><span class="s0">new </span><span class="s1">Runnable() {</span>
+            <span class="s3">//this manages the timer - counts down from 60 to 0 + says game over</span>
+            <span class="s1">@Override</span>
+            <span class="s0">public void </span><span class="s1">run() {</span>
+                <span class="s0">while </span><span class="s1">(count.get() &gt;= </span><span class="s2">0</span><span class="s1">) {</span>
+                    <span class="s0">if </span><span class="s1">(count.get() &gt; </span><span class="s2">0</span><span class="s1">) {</span>
+                        <span class="s0">try </span><span class="s1">{</span>
+                            <span class="s1">sleep(</span><span class="s2">1000</span><span class="s1">)</span><span class="s0">;</span>
+                        <span class="s1">} </span><span class="s0">catch </span><span class="s1">(InterruptedException e) {</span>
+                            <span class="s0">throw new </span><span class="s1">RuntimeException(e)</span><span class="s0">;</span>
+                        <span class="s1">}</span>
+                        <span class="s1">count.getAndDecrement()</span><span class="s0">;</span>
+                        <span class="s1">timerText.setText(</span><span class="s4">&quot;&quot; </span><span class="s1">+ count)</span><span class="s0">;</span>
+                    <span class="s1">} </span><span class="s0">else if </span><span class="s1">(count.get() == </span><span class="s2">0</span><span class="s1">) {</span>
+                        <span class="s1">timerText.setText(</span><span class="s4">&quot;Time's up!&quot;</span><span class="s1">)</span><span class="s0">;</span>
+                         <span class="s3">//Toast message = new Toast(MainActivity.this);</span>
+                        <span class="s3">//message.setText(&quot;Game Over! Click restart to play again!&quot;);</span>
+                        <span class="s1">message.show()</span><span class="s0">;</span>
+                        <span class="s0">try </span><span class="s1">{</span>
+                            <span class="s1">sleep(</span><span class="s2">2000</span><span class="s1">)</span><span class="s0">;</span>
+                        <span class="s1">} </span><span class="s0">catch </span><span class="s1">(InterruptedException e) {</span>
+                            <span class="s0">throw new </span><span class="s1">RuntimeException(e)</span><span class="s0">;</span>
+                        <span class="s1">}</span>
+                    <span class="s1">}</span>
+                <span class="s1">}</span>
+            <span class="s1">}</span>
+        <span class="s1">})</span><span class="s0">;</span>
+
+
+        <span class="s1">thread.start()</span><span class="s0">;</span>
+        <span class="s1">thread2.start()</span><span class="s0">;</span>
+
+
+        <span class="s1">restart.setOnClickListener(</span><span class="s0">new </span><span class="s1">View.OnClickListener() {</span>
+            <span class="s1">@Override</span>
+            <span class="s0">public void </span><span class="s1">onClick(View v) {</span>
+                <span class="s1">count.set(</span><span class="s2">30</span><span class="s1">)</span><span class="s0">;</span>
+                <span class="s1">score = </span><span class="s2">0</span><span class="s0">;</span>
+                <span class="s1">timerText.setText(</span><span class="s4">&quot;30&quot;</span><span class="s1">)</span><span class="s0">;</span>
+                <span class="s1">points.setText(</span><span class="s4">&quot;0&quot;</span><span class="s1">)</span><span class="s0">;</span>
+                <span class="s1">timing.postDelayed(r</span><span class="s0">, </span><span class="s2">1000</span><span class="s1">)</span><span class="s0">;</span>
+                <span class="s1">gridLay.removeAllViews()</span><span class="s0">;</span>
+            <span class="s1">}</span>
+        <span class="s1">})</span><span class="s0">;</span>
+    <span class="s1">}</span>
+
+
+    <span class="s0">public void </span><span class="s1">scaleCookie(ImageView img</span><span class="s0">, boolean </span><span class="s1">scaleUp</span><span class="s0">, boolean </span><span class="s1">isClickable</span><span class="s0">, int </span><span class="s1">num) {</span>
+        <span class="s0">if</span><span class="s1">(num==</span><span class="s2">6</span><span class="s1">)</span>
+        <span class="s1">{</span>
+            <span class="s1">img.setImageResource(R.drawable.cookiepower)</span><span class="s0">;</span>
+        <span class="s1">}</span>
+        <span class="s0">float </span><span class="s1">startScale = scaleUp ? </span><span class="s2">0f </span><span class="s1">: </span><span class="s2">1f</span><span class="s0">;</span>
+        <span class="s3">//if scaleUp is true then start at 0f, else start at 1f</span>
+        <span class="s0">float </span><span class="s1">endScale = scaleUp ? </span><span class="s2">1f </span><span class="s1">: </span><span class="s2">0f</span><span class="s0">;</span>
+        <span class="s3">//this makes the end scale 1 if scaleUp is true and 0 if false</span>
+        <span class="s1">img.animate().scaleX(endScale).scaleY(endScale).setDuration(</span><span class="s2">1000</span><span class="s1">).withEndAction(() -&gt;</span>
+        <span class="s1">{</span>
+            <span class="s0">if </span><span class="s1">(!scaleUp) {</span>
+                <span class="s1">img.setEnabled(</span><span class="s0">true</span><span class="s1">)</span><span class="s0">;</span>
+            <span class="s1">}</span>
+        <span class="s1">})</span><span class="s0">;</span>
+        <span class="s0">if </span><span class="s1">(isClickable) {</span>
+
+            <span class="s1">img.setOnClickListener(</span><span class="s0">new </span><span class="s1">View.OnClickListener() {</span>
+                <span class="s1">@Override</span>
+                <span class="s0">public void </span><span class="s1">onClick(View v) {</span>
+                    <span class="s0">if</span><span class="s1">(num==</span><span class="s2">6</span><span class="s1">)</span>
+                    <span class="s1">{</span>
+                        <span class="s1">count.addAndGet(</span><span class="s2">5</span><span class="s1">)</span><span class="s0">;</span>
+                        <span class="s1">timerText.setText(</span><span class="s4">&quot;&quot;</span><span class="s1">+count.get())</span><span class="s0">;</span>
+                    <span class="s1">}</span>
+                    <span class="s1">score++</span><span class="s0">;</span>
+                    <span class="s1">points.setText(</span><span class="s4">&quot;&quot; </span><span class="s1">+ score)</span><span class="s0">;</span>
+                    <span class="s1">v.setEnabled(</span><span class="s0">false</span><span class="s1">)</span><span class="s0">;</span>
+                    <span class="s3">//this makes it go down after getting clicked</span>
+                    <span class="s1">scaleCookie(img</span><span class="s0">, false, false,</span><span class="s1">num)</span><span class="s0">;</span>
+                    <span class="s1">addWidget(img)</span><span class="s0">;</span>
+                <span class="s1">}</span>
+            <span class="s1">})</span><span class="s0">;</span>
+        <span class="s1">}</span>
+    <span class="s1">}</span>
+
+    <span class="s0">public void </span><span class="s1">addWidget(ImageView image) {</span>
+        <span class="s1">ImageView cookie = </span><span class="s0">new </span><span class="s1">ImageView(</span><span class="s0">this</span><span class="s1">)</span><span class="s0">;</span>
+        <span class="s1">cookie.setImageDrawable(image.getDrawable())</span><span class="s0">;</span>
+        <span class="s1">gridLay.addView(cookie)</span><span class="s0">;</span>
+
+        <span class="s1">cookie.getLayoutParams().height = </span><span class="s2">100</span><span class="s0">;</span>
+        <span class="s1">cookie.getLayoutParams().width = </span><span class="s2">100</span><span class="s0">;</span>
+    <span class="s1">}</span>
+
+
+<span class="s1">}</span></pre>
+</body>
+</html>
